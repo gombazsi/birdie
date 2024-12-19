@@ -222,9 +222,17 @@
         }
 
         function drawFinishLine() {
-            ctx.fillStyle = 'blue';
-            finishLine.y = gameCanvas.height - 50 - speed * (updatesCount - settings.length);
-            ctx.fillRect(0, finishLine.y, gameCanvas.width, 10);
+            const blockSize = 20; // Width of each block in the checker pattern
+            const finishLineY = gameCanvas.height - 50 - speed * (updatesCount - settings.length);
+            finishLine.y = finishLineY; // Update the finish line's y-position
+            
+            for(let j = 0; j < 4; j++){
+                for (let i = 0; i < gameCanvas.width / blockSize; i++) {
+                    const isBlack = i % 2 === j % 2; // Alternate between black and white
+                    ctx.fillStyle = isBlack ? 'black' : 'white';
+                    ctx.fillRect(i * blockSize, finishLineY + j * 10, blockSize, 10); // Draw a rectangle
+                }
+            }
         }
 
         function drawProgress() {
@@ -271,10 +279,7 @@
         function updateGame() {
             updatesCount++;
             ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-
-
-            drawBird();            
-            drawObstacles();
+           
             drawProgress();
            
             if (updatesCount > settings.length) {
@@ -283,6 +288,9 @@
                     endGame('Juhúúúú!!!', true);
                 }
             }
+            drawObstacles();
+
+            drawBird();   
         }
     </script>
 </body>
