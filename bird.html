@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sielő bugybó</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #game-container {
+            width: 400px;
+            height: 100vh;
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #add8e6;
+        }
+        #start-screen, #game-screen, #end-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        #start-screen.active, #game-screen.active, #end-screen.active {
+            display: flex;
+        }
+        #game-canvas {
+            background-color: #fff;
+            border: 2px solid #000;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            width: 100%
+        }
+        .control-button {
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .setting {
+            display: flex;
+            justify-content: space-between;
+            width: 60%;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="active">
+            <h1>Sielő bugybó</h1>
+            <img src="birdie.png" alt="Bird Skiing" style="max-width: 80%; height: auto;">
+
+            <button class="button" onclick="startGame()">Start</button>
+            <div class="setting" style="margin-top: 50px;"> 
+                <label for="frequency-input" >Frissítési frekvencia: </label> 
+                <input type="number" id="frequency-input" style="width: 50px;"  value="8"> 
+            </div> 
+            <div class="setting" > 
+                <label for="obstacle-probability-input">Akadály gyakoriság: </label> 
+                <input type="text" id="obstacle-probability-input" style="width: 50px;" value="5"> 
+            </div>
+            <div class="setting" > 
+                <label for="length-input">Pálya hossza: </label> 
+                <input type="text" id="length-input" style="width: 50px;" value="3000"> 
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen">
+            <canvas id="game-canvas" width="400" height="600"></canvas>
+            <div id="controls">
+                <button class="control-button" onclick="moveLeft()">&larr;</button>
+                <button class="control-button" onclick="moveRight()">&rarr;</button>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen">
+            <h1 id="end-message">Game Over!</h1>
+            <h3 id="reward" style="display: none; width: 50%; margin-left: auto; margin-right: auto; text-align: center;">Nyereményed: egy kétnapos síbérlet!</h3>
+            <img id="end-birdie" src="birdie.png" alt="Bird Skiing" style="max-width: 80%; height: auto;">
+            <button class="button" onclick="restartGame()">Újra</button>
+        </div>
+    </div>
+
+    <script>
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        const gameCanvas = document.getElementById('game-canvas');
+        const ctx = gameCanvas.getContext('2d');
+
+        let bird = { x: 175, y: 50, width: 30, height: 30, image: new Image() };
+        bird.image.src = 'birdie.png';
+        let obstacles = [];
+        let finishLine = {};
+        let gameInterval;
+        let speed = 2;
+        let updatesCount = 0;
+
+        let settings = {
+            frequency: 8,
+            obstacleProbability: 5,
+            length: 3000
+        }
+
+        function startGame() {
+            settings.frequency = document.getElementById("frequency-input").value;
+            settings.obstacleProbability = document.getElementById("obstacle-probability-input").value;
+            settings.length = document.getElementById("length-input").value;
+            startScreen.classList.remove('active');
+            gameScreen.classList.add('active');
+            resetGame();
+            gameInterval = setInterval(updateGame, settings.frequency);
+        }
+
+        function endGame(message, win) {
+            clearInterval(gameInterval);
+            gameScreen.classList.remove('active');
+            endScreen.classList.add('active');
+            document.getElementById('end-message').textContent = message;
+            if(win) {
+                document.getElementById("end-birdie").style.transform = "rotate(0deg)";                
+                document.getElementById("reward").style.display = "flex";
+            }
+            else{
+                document.getElementById("end-birdie").style.transform = "rotate(180deg)";      
+                document.getElementById("reward").style.display = "none";
+            }
+        }
+
+        function restartGame() {
+            endScreen.classList.remove('active');
+            startScreen.classList.add('active');
+        }
+
+        function resetGame() {
+            bird.x = 175;
+            bird.y = 50;
+            obstacles = [];
+            updatesCount = 0;
+        }
+
+        function moveLeft() {
+            bird.x -= 20;
+        }
+
+        function moveRight() {
+            bird.x += 20;
+        }
+
+        function createObstacle() {
+            const size = Math.random() * 20 + 20;
+            const x = Math.random() * (gameCanvas.width - size);
+            const type = Math.random() > 0.5 ? 'tree' : 'rock';
+            let image = new Image();
+            if (type === 'rock') {
+                const rockImages = ['rock1.png', 'rock2.png', 'rock3.png', 'rock4.png'];
+                image.src = rockImages[Math.floor(Math.random() * rockImages.length)];
+            } else {
+                const treeImages = ['tree1.png', 'tree2.png', 'tree3.png', 'tree4.png'];
+                image.src = treeImages[Math.floor(Math.random() * treeImages.length)];
+            }
+            obstacles.push({ x, y: gameCanvas.height + size, width: size, height: size, type, image });
+        }
+
+        function drawFinishLine() {
+            ctx.fillStyle = 'blue';
+            finishLine.y = gameCanvas.height - 50 - speed * (updatesCount - settings.length);
+            ctx.fillRect(0, finishLine.y, gameCanvas.width, 10);
+        }
+
+        function drawBird(){
+            ctx.drawImage(bird.image, bird.x-3, bird.y-3, bird.width+6, bird.height+6);
+        }
+
+        function updateGame() {
+            updatesCount++;
+            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            drawBird();
+            
+            // Draw obstacles
+            if (Math.random() < settings.obstacleProbability / 100) createObstacle();
+
+            obstacles.forEach((obstacle, index) => {
+                obstacle.y -= speed;
+                ctx.drawImage(obstacle.image, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+
+                // Collision detection
+                if (
+                    bird.x < obstacle.x + obstacle.width &&
+                    bird.x + bird.width > obstacle.x &&
+                    bird.y < obstacle.y + obstacle.height &&
+                    bird.y + bird.height > obstacle.y
+                ) {
+                    endGame('CSIP CSIP', false);
+                }
+
+                // Remove off-screen obstacles
+                if (obstacle.y + obstacle.height < 0) {
+                    obstacles.splice(index, 1);
+                }
+            });
+
+            // Draw finish line and check for win
+            if (updatesCount > settings.length) {
+                drawFinishLine();
+                if (bird.y > finishLine.y ) {
+                    endGame('Juhúúúú!!!', true);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
