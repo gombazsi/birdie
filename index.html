@@ -83,8 +83,16 @@
         <div id="game-screen">
             <canvas id="game-canvas" width="400" height="600"></canvas>
             <div id="controls">
-                <button class="control-button" id="left-button" onmousedown ="moveLeftDown()" onmouseup="moveLeftUp()">&larr;</button>
-                <button class="control-button" id="right-button" onmousedown ="moveRightDown()" onmouseup="moveRightUp()">&rarr;</button>
+                <button class="control-button" id="left-button" 
+                    onmousedown="moveLeftDown()" 
+                    onmouseup="moveLeftUp()" 
+                    ontouchstart="moveLeftDown()" 
+                    ontouchend="moveLeftUp()">&larr;</button>
+                <button class="control-button" id="right-button" 
+                    onmousedown="moveRightDown()" 
+                    onmouseup="moveRightUp()" 
+                    ontouchstart="moveRightDown()" 
+                    ontouchend="moveRightUp()">&rarr;</button>
             </div>
         </div>
 
