@@ -59,6 +59,13 @@
             justify-content: space-between;
             width: 60%;
         }
+        button:focus {
+            outline: none;
+        }
+        * {
+            user-select: none; /* Disable all selection */
+            pointer-events: auto; /* Ensure no other elements block interaction */
+        }
     </style>
 </head>
 <body>
@@ -88,15 +95,17 @@
             <canvas id="game-canvas" width="400" height="600"></canvas>
             <div id="controls">
                 <button class="control-button" id="left-button" 
+                    tabindex="-1" 
                     onmousedown="moveLeftDown()" 
                     onmouseup="moveLeftUp()" 
-                    ontouchstart="moveLeftDown()" 
-                    ontouchend="moveLeftUp()">&larr;</button>
-                <button class="control-button" id="right-button" 
+                    ontouchstart="moveLeftDown(event)" 
+                    ontouchend="moveLeftUp(event)">&larr;</button>
+                <button class="control-button" id="right-button"
+                    tabindex="-1" 
                     onmousedown="moveRightDown()" 
                     onmouseup="moveRightUp()" 
-                    ontouchstart="moveRightDown()" 
-                    ontouchend="moveRightUp()">&rarr;</button>
+                    ontouchstart="moveRightDown(event)" 
+                    ontouchend="moveRightUp(event)">&rarr;</button>
             </div>
         </div>
 
@@ -124,14 +133,16 @@
         let speed = 2;
         let updatesCount = 0;
 
-        document.getElementById('left-button').addEventListener('touchstart', (event) => {
-            event.preventDefault();
-            moveLeftDown();
-        });
-        document.getElementById('right-button').addEventListener('touchstart', (event) => {
-            event.preventDefault();
-            moveRightDown();
-        });
+        const leftButton = document.getElementById('left-button');
+        const rightButton = document.getElementById('right-button');
+        let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (isTouchDevice) {
+            leftButton.addEventListener('touchstart', moveLeftDown, { passive: false });
+            leftButton.addEventListener('touchend', moveLeftUp, { passive: false });
+        } else {
+            leftButton.addEventListener('mousedown', moveLeftDown);
+            leftButton.addEventListener('mouseup', moveLeftUp);
+        }
 
 
         let settings = {
@@ -261,11 +272,10 @@
             updatesCount++;
             ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
 
-            drawProgress();
 
-            drawBird();
-            
+            drawBird();            
             drawObstacles();
+            drawProgress();
            
             if (updatesCount > settings.length) {
                 drawFinishLine();
