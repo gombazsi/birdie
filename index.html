@@ -52,7 +52,7 @@
             font-size: 20px;
             cursor: pointer;
             user-select: none;
-            touch-action: manipulation; 
+            touch-action: none; 
         }
         .setting {
             display: flex;
@@ -95,17 +95,9 @@
             <canvas id="game-canvas" width="400" height="600"></canvas>
             <div id="controls">
                 <button class="control-button" id="left-button" 
-                    tabindex="-1" 
-                    onmousedown="moveLeftDown()" 
-                    onmouseup="moveLeftUp()" 
-                    ontouchstart="moveLeftDown(event)" 
-                    ontouchend="moveLeftUp(event)">&larr;</button>
+                    tabindex="-1" >&larr;</button>
                 <button class="control-button" id="right-button"
-                    tabindex="-1" 
-                    onmousedown="moveRightDown()" 
-                    onmouseup="moveRightUp()" 
-                    ontouchstart="moveRightDown(event)" 
-                    ontouchend="moveRightUp(event)">&rarr;</button>
+                    tabindex="-1" >&rarr;</button>
             </div>
         </div>
 
@@ -137,11 +129,15 @@
         const rightButton = document.getElementById('right-button');
         let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice) {
-            leftButton.addEventListener('touchstart', moveLeftDown, { passive: false });
-            leftButton.addEventListener('touchend', moveLeftUp, { passive: false });
+            leftButton.addEventListener('touchstart', moveLeftDown);
+            leftButton.addEventListener('touchend', moveLeftUp);
+            rightButton.addEventListener('touchstart', moveRightDown);
+            rightButton.addEventListener('touchend', moveRightUp);
         } else {
             leftButton.addEventListener('mousedown', moveLeftDown);
             leftButton.addEventListener('mouseup', moveLeftUp);
+            rightButton.addEventListener('mousedown', moveRightDown);
+            rightButton.addEventListener('mouseup', moveRightUp);
         }
 
 
@@ -176,19 +172,23 @@
             }
         }
 
-        function moveLeftDown(){
+        function moveLeftDown(event) {
+            event.preventDefault();
             bird.movingLeft = true;
         }
 
-        function moveLeftUp(){
+        function moveLeftUp(event) {
+            event.preventDefault();
             bird.movingLeft = false;
         }
-        
-        function moveRightDown(){
+
+        function moveRightDown(event) {
+            event.preventDefault();
             bird.movingRight = true;
         }
 
-        function moveRightUp(){
+        function moveRightUp(event) {
+            event.preventDefault();
             bird.movingRight = false;
         }
 
