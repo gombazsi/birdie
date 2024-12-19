@@ -280,7 +280,6 @@
             updatesCount++;
             ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
            
-            drawProgress();
            
             if (updatesCount > settings.length) {
                 drawFinishLine();
@@ -288,8 +287,9 @@
                     endGame('Juhúúúú!!!', true);
                 }
             }
+            
             drawObstacles();
-
+            drawProgress();
             drawBird();   
         }
     </script>
