@@ -49,6 +49,7 @@
             padding: 10px 20px;
             font-size: 20px;
             cursor: pointer;
+            user-select: none;
         }
         .setting {
             display: flex;
@@ -212,6 +213,8 @@
             var buffer = 5;
             var x = bird.movingRight ? bird.x + moveBy : bird.x;
             x = bird.movingLeft ? x-moveBy : x;
+            x = x < 0 ? 0 : x;
+            x = x > 370 ? 370 : x;
             bird.x = x;
 
             ctx.drawImage(bird.image, x-buffer, bird.y-buffer, bird.width+2*buffer, bird.height+2*buffer);
