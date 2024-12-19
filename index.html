@@ -123,6 +123,16 @@
         let speed = 2;
         let updatesCount = 0;
 
+        document.getElementById('left-button').addEventListener('touchstart', (event) => {
+            event.preventDefault();
+            moveLeftDown();
+        });
+        document.getElementById('right-button').addEventListener('touchstart', (event) => {
+            event.preventDefault();
+            moveRightDown();
+        });
+
+
         let settings = {
             frequency: 8,
             obstacleProbability: 5,
@@ -211,7 +221,7 @@
         }
 
         function drawBird(){
-            var moveBy = 1;
+            var moveBy = 2;
             var buffer = 5;
             var x = bird.movingRight ? bird.x + moveBy : bird.x;
             x = bird.movingLeft ? x-moveBy : x;
