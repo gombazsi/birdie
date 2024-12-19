@@ -83,8 +83,8 @@
         <div id="game-screen">
             <canvas id="game-canvas" width="400" height="600"></canvas>
             <div id="controls">
-                <button class="control-button" onclick="moveLeft()">&larr;</button>
-                <button class="control-button" onclick="moveRight()">&rarr;</button>
+                <button class="control-button" id="left-button" onmousedown ="moveLeftDown()" onmouseup="moveLeftUp()">&larr;</button>
+                <button class="control-button" id="right-button" onmousedown ="moveRightDown()" onmouseup="moveRightUp()">&rarr;</button>
             </div>
         </div>
 
@@ -104,7 +104,7 @@
         const gameCanvas = document.getElementById('game-canvas');
         const ctx = gameCanvas.getContext('2d');
 
-        let bird = { x: 175, y: 50, width: 30, height: 30, image: new Image() };
+        let bird = { x: 175, y: 50, width: 30, height: 30, image: new Image() , movingRight: false, movingLeft: false };
         bird.image.src = 'birdie.png';
         let obstacles = [];
         let finishLine = {};
@@ -143,6 +143,22 @@
             }
         }
 
+        function moveLeftDown(){
+            bird.movingLeft = true;
+        }
+
+        function moveLeftUp(){
+            bird.movingLeft = false;
+        }
+        
+        function moveRightDown(){
+            bird.movingRight = true;
+        }
+
+        function moveRightUp(){
+            bird.movingRight = false;
+        }
+
         function restartGame() {
             endScreen.classList.remove('active');
             startScreen.classList.add('active');
@@ -151,16 +167,10 @@
         function resetGame() {
             bird.x = 175;
             bird.y = 50;
+            bird.movingLeft = false;
+            bird.movingRight = false;
             obstacles = [];
             updatesCount = 0;
-        }
-
-        function moveLeft() {
-            bird.x -= 20;
-        }
-
-        function moveRight() {
-            bird.x += 20;
         }
 
         function createObstacle() {
@@ -184,17 +194,22 @@
             ctx.fillRect(0, finishLine.y, gameCanvas.width, 10);
         }
 
-        function drawBird(){
-            ctx.drawImage(bird.image, bird.x-3, bird.y-3, bird.width+6, bird.height+6);
+        function drawProgress() {
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(0, 0, gameCanvas.width * updatesCount / settings.length, 10);
         }
 
-        function updateGame() {
-            updatesCount++;
-            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+        function drawBird(){
+            var moveBy = 1;
+            var buffer = 5;
+            var x = bird.movingRight ? bird.x + moveBy : bird.x;
+            x = bird.movingLeft ? x-moveBy : x;
+            bird.x = x;
 
-            drawBird();
-            
-            // Draw obstacles
+            ctx.drawImage(bird.image, x-buffer, bird.y-buffer, bird.width+2*buffer, bird.height+2*buffer);
+        }
+
+        function drawObstacles() {
             if (Math.random() < settings.obstacleProbability / 100) createObstacle();
 
             obstacles.forEach((obstacle, index) => {
@@ -216,8 +231,18 @@
                     obstacles.splice(index, 1);
                 }
             });
+        }
 
-            // Draw finish line and check for win
+        function updateGame() {
+            updatesCount++;
+            ctx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+
+            drawProgress();
+
+            drawBird();
+            
+            drawObstacles();
+           
             if (updatesCount > settings.length) {
                 drawFinishLine();
                 if (bird.y > finishLine.y ) {
