@@ -7,104 +7,170 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sielő bugybó</title>
-    <style>
+    <title>Síelő bugybó</title>
+    <style>     
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            user-select: none;
-        }
-        #game-container {
-            width: 400px;
-            height: 100vh;
-            margin-left: auto;
-            margin-right: auto;
+            font-family: 'Press Start 2P', sans-serif;
+            color: #162447;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #add8e6;
+            height: 100vh;
+            overflow: hidden;
+            
+            background: linear-gradient(90deg, rgba(209,209,209,1) 0%, rgba(255,255,255,1) 50%, rgba(209,209,209,1) 100%);
+        }
+
+        #game-container {
+            width: 420px;
+            height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 0px 20px blue;
             overflow: hidden;
         }
+
+        h1, h3 {
+            margin: 0;
+            text-align: center;
+            text-shadow: 2px 2px 0px #393e46, -2px -2px 0px;
+        }
+
         #start-screen, #game-screen, #end-screen {
             display: none;
             flex-direction: column;
             align-items: center;
+            width: 100%;
         }
+
         #start-screen.active, #game-screen.active, #end-screen.active {
             display: flex;
         }
+
         #game-canvas {
-            background-color: #fff;
-            border: 2px solid #000;
+            border-radius: 5px;
+            width: 100%;
+            box-shadow: inset 0px 0px 10px #00ffdd;
+            background-color: white;
         }
+
         .button {
             margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 20px;
+            padding: 15px 30px;
+            font-size: 16px;
+            color: #fff;
+            background: linear-gradient(180deg, #00adb5, #006f8b);
+            border: 4px solid #00adb5;
+            border-radius: 5px;
+            text-transform: uppercase;
             cursor: pointer;
+            text-shadow: 2px 2px 0px #000;
+            box-shadow: 0px 5px 0px #006f8b, 0px 5px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 40px;
+
+            font-family: "Press Start 2P", serif;
+            font-weight: 400;
+            font-style: normal;
         }
+
+        .button:hover {
+            transform: translateY(3px);
+            box-shadow: 0px 8px 15px rgba(0, 255, 221, 0.5);
+        }
+
         #controls {
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
-            width: 100%
+            width: 100%;
         }
+
         .control-button {
-            padding: 10px 20px;
-            font-size: 20px;
+            width: 48%;
+            padding: 15px;
+            font-size: 24px;
+            color: #fff;
+            background: #00adb5;
+            border: 4px solid #00ffdd;
+            border-radius: 5px;
+            text-shadow: 2px 2px 0px #000;
             cursor: pointer;
-            user-select: none;
-            touch-action: none; 
+            transition: background 0.3s, box-shadow 0.3s;
         }
+
+        .control-button:hover {
+            background: #007b8c;
+            box-shadow: 0px 5px 15px rgba(0, 255, 221, 0.5);
+        }
+
         .setting {
             display: flex;
             justify-content: space-between;
-            width: 60%;
+            width: 85%;
+            margin-top: 15px;
+            font-size: 12px;
         }
-        button:focus {
+
+        .setting input {
+            font-family: 'Press Start 2P', sans-serif;
+            background: #1f4068;
+            border: 2px solid #00adb5;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            width: 50px;
             outline: none;
         }
-        * {
-            user-select: none; /* Disable all selection */
-            pointer-events: auto; /* Ensure no other elements block interaction */
+
+        button:focus, input:focus {
+            outline: none;
         }
 
-        .press-start-2p-regular
-        {
-            font-family: "Press Start 2P", serif;
-            font-weight: 400;
-            font-style: normal;
+        #end-birdie {
+            margin-top: 20px;
         }
 
-        .press-start-2p-heading {
-            font-family: "Press Start 2P", serif;
-            font-weight: 400;
-            font-style: normal;
-            font-size: x-large;
+        #reward {
+            font-size: 14px;
+            color: #ffd700;
+            text-shadow: 1px 1px 2px #000;
+            margin: 20px;
         }
+
+        #end-message {
+            margin-bottom: 40px;
+        }
+
+        #reward-container {
+            width: 100%;
+        }
+
     </style>
 </head>
 <body>
     <div id="game-container">
         <!-- Start Screen -->
         <div id="start-screen" class="active">
-            <h1 class="press-start-2p-heading">Sielő bugybó</h1>
+            <h1 class="press-start-2p-heading">Síelő Bugybó</h1>
             <img src="birdie.png" alt="Bird Skiing" style="max-width: 80%; height: auto;">
-
-            <button class="button press-start-2p-regular" onclick="startGame()">Start</button>
-            <div class="setting" style="margin-top: 50px;"> 
-                <label for="frequency-input" >Frissítési frekvencia: </label> 
-                <input type="number" id="frequency-input" style="width: 50px;"  value="7"> 
-            </div> 
-            <div class="setting" > 
-                <label for="obstacle-probability-input">Akadály gyakoriság: </label> 
-                <input type="text" id="obstacle-probability-input" style="width: 50px;" value="4"> 
+            <button class="button" onclick="startGame()">Start</button>
+            <div class="setting">
+                <label for="frequency-input">Frekvencia:</label>
+                <input type="number" id="frequency-input" value="7">
             </div>
-            <div class="setting" > 
-                <label for="length-input">Pálya hossza: </label> 
-                <input type="text" id="length-input" style="width: 50px;" value="3500"> 
+            <div class="setting">
+                <label for="obstacle-probability-input">Akadály gyakoriság:</label>
+                <input type="text" id="obstacle-probability-input" value="4">
+            </div>
+            <div class="setting">
+                <label for="length-input">Pálya hossza:</label>
+                <input type="text" id="length-input" value="3500">
             </div>
         </div>
 
@@ -112,22 +178,34 @@
         <div id="game-screen">
             <canvas id="game-canvas" width="400" height="600"></canvas>
             <div id="controls">
-                <button class="control-button" id="left-button" 
-                    tabindex="-1" >&larr;</button>
-                <button class="control-button" id="right-button"
-                    tabindex="-1" >&rarr;</button>
+                <button class="control-button" id="left-button" tabindex="-1">&larr;</button>
+                <button class="control-button" id="right-button" tabindex="-1">&rarr;</button>
             </div>
         </div>
 
         <!-- End Screen -->
         <div id="end-screen">
             <h1 id="end-message">Game Over!</h1>
-            <h3 id="reward" style="display: none; width: 50%; margin-left: auto; margin-right: auto; text-align: center;">Nyereményed: egy kétnapos síbérlet!</h3>
+                <!-- Inside the reward section -->
+            <!-- Inside the reward section -->
+            <div id="reward-container" style="position: relative; text-align: center;">
+                <h3 id="reward" style="display: none; width: 50%; margin-left: auto; margin-right: auto; text-align: center; position: relative; z-index: 1;">
+                    Nyereményed: </br></br> egy kétnapos </br> síbérlet!
+                </h3>
+                <!-- Fireworks Overlay -->
+                <div id="fireworks-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;">
+                    <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExenZlcnJuMHpxdXp5OTJlOHlodno1MWVqMG1kb28zejJpbjR0b3cyaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XynSWKO5chZHuBhfsQ/giphy.gif" 
+                        alt="Fireworks" 
+                        style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
+                </div>
+            </div>
+
+
             <img id="end-birdie" src="birdie.png" alt="Bird Skiing" style="max-width: 80%; height: auto;">
-            <button class="button" onclick="restartGame()">Újra</button>
+            <button class="button" onclick="restartGame()">Vissza</button>
         </div>
     </div>
-
+    
     <script>
         const startScreen = document.getElementById('start-screen');
         const gameScreen = document.getElementById('game-screen');
@@ -180,15 +258,22 @@
             gameScreen.classList.remove('active');
             endScreen.classList.add('active');
             document.getElementById('end-message').textContent = message;
-            if(win) {
+
+            const reward = document.getElementById('reward');
+            const fireworksOverlay = document.getElementById('fireworks-overlay');
+
+            if (win) {
                 document.getElementById("end-birdie").style.transform = "rotate(0deg)";                
-                document.getElementById("reward").style.display = "flex";
-            }
-            else{
+                reward.style.display = "flex";
+                fireworksOverlay.style.display = "block"; // Show the overlay
+            } else {
                 document.getElementById("end-birdie").style.transform = "rotate(180deg)";      
-                document.getElementById("reward").style.display = "none";
+                reward.style.display = "none";
+                fireworksOverlay.style.display = "none"; // Hide the overlay
             }
         }
+
+
 
         function moveLeftDown(event) {
             event.preventDefault();
