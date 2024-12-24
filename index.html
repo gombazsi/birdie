@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Press+Start+2P&display=swap" rel="stylesheet">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sielő bugybó</title>
@@ -66,16 +70,30 @@
             user-select: none; /* Disable all selection */
             pointer-events: auto; /* Ensure no other elements block interaction */
         }
+
+        .press-start-2p-regular
+        {
+            font-family: "Press Start 2P", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .press-start-2p-heading {
+            font-family: "Press Start 2P", serif;
+            font-weight: 400;
+            font-style: normal;
+            font-size: x-large;
+        }
     </style>
 </head>
 <body>
     <div id="game-container">
         <!-- Start Screen -->
         <div id="start-screen" class="active">
-            <h1>Sielő bugybó</h1>
+            <h1 class="press-start-2p-heading">Sielő bugybó</h1>
             <img src="birdie.png" alt="Bird Skiing" style="max-width: 80%; height: auto;">
 
-            <button class="button" onclick="startGame()">Start</button>
+            <button class="button press-start-2p-regular" onclick="startGame()">Start</button>
             <div class="setting" style="margin-top: 50px;"> 
                 <label for="frequency-input" >Frissítési frekvencia: </label> 
                 <input type="number" id="frequency-input" style="width: 50px;"  value="7"> 
