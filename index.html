@@ -78,15 +78,15 @@
             <button class="button" onclick="startGame()">Start</button>
             <div class="setting" style="margin-top: 50px;"> 
                 <label for="frequency-input" >Frissítési frekvencia: </label> 
-                <input type="number" id="frequency-input" style="width: 50px;"  value="8"> 
+                <input type="number" id="frequency-input" style="width: 50px;"  value="7"> 
             </div> 
             <div class="setting" > 
                 <label for="obstacle-probability-input">Akadály gyakoriság: </label> 
-                <input type="text" id="obstacle-probability-input" style="width: 50px;" value="5"> 
+                <input type="text" id="obstacle-probability-input" style="width: 50px;" value="4"> 
             </div>
             <div class="setting" > 
                 <label for="length-input">Pálya hossza: </label> 
-                <input type="text" id="length-input" style="width: 50px;" value="3000"> 
+                <input type="text" id="length-input" style="width: 50px;" value="3500"> 
             </div>
         </div>
 
@@ -142,9 +142,9 @@
 
 
         let settings = {
-            frequency: 8,
-            obstacleProbability: 5,
-            length: 3000
+            frequency: document.getElementById("frequency-input")?.value,
+            obstacleProbability: document.getElementById("frequency-input")?.value,
+            length: document.getElementById("obstacle-probability-input")?.value
         }
 
         function startGame() {
